@@ -21,7 +21,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 **1 Introduction**
 ---
 
-"Classification" in machine learning,is a supervised learning approach that aims to solve a predictive modeling problem in which assigns a label value to a specific class and afterwards can assign a particular type to be of one kind or another for making new observations.The main goal in classification is to identify which class or category the new data will be divided. There are several different types of machine learning algorithms/models for classification: (1)Logistic Regression, (2)Naive Bayes, (3)Stochastic Gradient Descent, (4)K-Nearest Neighbors, (5)Decision Tree, (6)Random Forest, (7)Artificial Neural Network and (8)Support Vector Machine. 
+"Classification" in machine learning,is a supervised learning approach that aims to solve a predictive modeling problem in which assigns a label value to a specific class and afterwards can assign a particular type to be of one kind or another for making new observations.The main goal in classification is to identify which class or category the new data will be divided. There are several different types of machine learning algorithms/models for classification: (1)Logistic Regression, (2)Naive Bayes, (3)Stochastic Gradient Descent, (4)K-Nearest Neighbors, (5)Decision Tree, (6)Random Forest, (7)Artificial Neural Network and (8)Support Vector Machine. [@kotsiantis2006machine] [@kotsiantis2007supervised][@gupta2020comparative]
 
 In our assignment, we implement a classification approach on a chosen data set "Adult Data Set" - collected from UCI Machine Learning Repository- to predict whether income exceeds $50K/yr based on census data. This data set originally collected and extracted by Barry Becker from a 1994 census database. The URL in citation one[@A7] contains a description of these features. In order to solve the classification problem, we have selected two different types of machine learning algorithms/models that are going to be implemented to our data set: 1. Decision Trees and 2. Support Vector Machine. After the implementation, the accuracy and the misclassification errors of both algorithms are compared to see which model is better for prediction.
 
@@ -36,7 +36,7 @@ Afterwards, the adjusted data set is partitioned into training, validation and a
 
 **a. Decision Trees**
 
-Decision tree analysis in general, is a predictive modeling tool with applications covering many different areas. Mainly, decision trees are established with an algorithmic approach that define ways to separate a dataset based on different conditions.It is one of the most widely used and convenient model in machine learning for classification. The aim of decision trees is to generate a model that predicts the value of a target variable by learning simple decision rules deduced from the data features. (
+Decision tree analysis in general, is a predictive modeling tool with applications covering many different areas. Mainly, decision trees are established with an algorithmic approach that define ways to separate a dataset based on different conditions.It is one of the most widely used and convenient model in machine learning for classification. The aim of decision trees is to generate a model that predicts the value of a target variable by learning simple decision rules deduced from the data features.[@navada2011overview][@dietterich1995machine] [@somvanshi2016review]
 
 For decision trees, the following R packages “tree” and “rpart” are used. 
 First, a decision tree is constructed with the default parameter settings, denoted as “tree_a” in R script. The default tree model is then optimized by the accuracy rate returned by the validation data-set.
@@ -49,14 +49,14 @@ Finally, the tree_c is pruned by using the function prune.tree(. . . ) , thus gi
 
 **b. Support Vector Machine**
 
-Support Vector Machine (SVM) is one of the most popular supervised Learning algorithms that used for classification problems in machine learning. The objective of SVM algorithm is to generate the best decision boundary ,in other terms hyperplane, that can allocate N-dimensional space(N — the number of features) into classes in order to put the new data point in the right category. Through SVM, The hyperplane is generated in an iterative manner so that the error can be minimized. Briefly, SVM aims to divide the data sets into classes to find a maximum marginal hyperplane (MMH).
+Support Vector Machine (SVM) is one of the most popular supervised Learning algorithms that used for classification problems in machine learning. The objective of SVM algorithm is to generate the best decision boundary ,in other terms hyperplane, that can allocate N-dimensional space(N — the number of features) into classes in order to put the new data point in the right category. Through SVM, The hyperplane is generated in an iterative manner so that the error can be minimized. Briefly, SVM aims to divide the data sets into classes to find a maximum marginal hyperplane (MMH).[@somvanshi2016review] [@wu2006analysis]
 
 The data-set is first divided into a training data-set, a validation data-set and a test data-set (40/30/30). Again, the training data set is used as the default model, the "rbfdot" is used as the kernel function, and the parameter sigma is set to 0.01. The model is constructed with different parameters. The best parameters are determined by the classification errors returned from the validation data-set.
 
 The model is validated for parameters C in the range 0.1 to 5.0, and it is found that the validation set returned the lowest classification error for parameter C of 0.3. Based on the above parameters, the final model is constructed.
 
 
-**3 Result**
+**3 Results**
 ---
 
 ## 3.1 Decision Tree model
