@@ -21,9 +21,9 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 **1 Introduction**
 ---
 
-"Classification" in machine learning,is a supervised learning approach that aims to solve a predictive modeling problem in which assigns a label value to a specific class and afterwards can assign a particular type to be of one kind or another for making new observations.The main goal in classification is to identify which class or category the new data will be divided. There are several different types of machine learning algorithms for classification: (1)Logistic Regression, (2)Naive Bayes, (3)Stochastic Gradient Descent, (4)K-Nearest Neighbors, (5)Decision Tree, (6)Random Forest, (7)Artificial Neural Network and (8)Support Vector Machine. 
+"Classification" in machine learning,is a supervised learning approach that aims to solve a predictive modeling problem in which assigns a label value to a specific class and afterwards can assign a particular type to be of one kind or another for making new observations.The main goal in classification is to identify which class or category the new data will be divided. There are several different types of machine learning algorithms/models for classification: (1)Logistic Regression, (2)Naive Bayes, (3)Stochastic Gradient Descent, (4)K-Nearest Neighbors, (5)Decision Tree, (6)Random Forest, (7)Artificial Neural Network and (8)Support Vector Machine. 
 
-In our assignment, we implement a classification approach on a chosen data set "Adult Data Set" - collected from UCI Machine Learning Repository- to predict whether income exceeds $50K/yr based on census data. This data set originally collected and extracted by Barry Becker from a 1994 census database. The URL in citation one[@A7] contains a description of these features. In order to solve the classification problem, we have selected two different types of machine learning algorithms that are going to be implemented to our data set: 1. Decision Trees and 2. Support Vector Machine. After the implementation, the accuracy and the misclassification errors of both algorithms are compared to see which model is better for prediction.
+In our assignment, we implement a classification approach on a chosen data set "Adult Data Set" - collected from UCI Machine Learning Repository- to predict whether income exceeds $50K/yr based on census data. This data set originally collected and extracted by Barry Becker from a 1994 census database. The URL in citation one[@A7] contains a description of these features. In order to solve the classification problem, we have selected two different types of machine learning algorithms/models that are going to be implemented to our data set: 1. Decision Trees and 2. Support Vector Machine. After the implementation, the accuracy and the misclassification errors of both algorithms are compared to see which model is better for prediction.
 
 **1.1 The Description of the data set**
 
@@ -35,6 +35,8 @@ Afterwards, the adjusted data set is partitioned into training, validation and a
 ---
 
 **a. Decision trees**
+
+Decision tree analysis in general, is a predictive modeling tool with applications covering many different areas. Mainly, decision trees are established with an algorithmic approach that define ways to separate a dataset based on different conditions.It is one of the most widely used and convenient model in machine learning for classification. The aim of decision trees is to generate a model that predicts the value of a target variable by learning simple decision rules deduced from the data features. Here in our study, we use decision tree model for a classification task to predict whether income exceeds $50K/yr based on census data.
 
 For decision trees, the following R packages "tree" and "rpart" are used for classification. 
 
