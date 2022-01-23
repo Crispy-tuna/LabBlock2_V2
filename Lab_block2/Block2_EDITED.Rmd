@@ -38,9 +38,9 @@ Afterwards, the adjusted data set is partitioned into training, validation and a
 
 Decision tree analysis in general, is a predictive modeling tool with applications covering many different areas. Mainly, decision trees are established with an algorithmic approach that define ways to separate a dataset based on different conditions.It is one of the most widely used and convenient model in machine learning for classification. The aim of decision trees is to generate a model that predicts the value of a target variable by learning simple decision rules deduced from the data features. Here in our study, we use decision tree model for a classification task to predict whether income exceeds $50K/yr based on census data.
 
-For decision trees, the following R packages "tree" and "rpart" are used for classification. 
+For decision trees, the following R packages "tree" and "rpart" are used for classification. While "tree" package 
 
-First, a decision tree is constructed with the default parameter settings, denoted by "tree_a" in R script. The default tree model is then optimized by the accuracy rate returned by the validation data-set. 
+In our assignment, firstly a decision tree is constructed with the default parameter settings, denoted by "tree_a" in R script. The default tree model is then optimized by the accuracy rate returned by the validation data-set. 
 
 We then tried to build different tree models, setting a tree with a minimum number of nodes of 5000 (denoted by tree_b) and a tree with a default deviance of 0.0005 (denoted by tree_b), respectively, and selected the tree model to be optimal in the next step by the correct rate returned.
 
