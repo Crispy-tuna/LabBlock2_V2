@@ -36,46 +36,22 @@ Afterwards, the adjusted data set is partitioned into training, validation and a
 
 **a. Decision Trees**
 
-Decision tree analysis in general, is a predictive modeling tool with applications covering many different areas. Mainly, decision trees are established with an algorithmic approach that define ways to separate a dataset based on different conditions.It is one of the most widely used and convenient model in machine learning for classification. The aim of decision trees is to generate a model that predicts the value of a target variable by learning simple decision rules deduced from the data features. 
+Decision tree analysis in general, is a predictive modeling tool with applications covering many different areas. Mainly, decision trees are established with an algorithmic approach that define ways to separate a dataset based on different conditions.It is one of the most widely used and convenient model in machine learning for classification. The aim of decision trees is to generate a model that predicts the value of a target variable by learning simple decision rules deduced from the data features. (
 
-In our assignment, we have followed the following key stages:
-
-1)Installing "tree" and "rpart" packages.
-
-2)Reading and adjusting selected adult data set and partition into training/validation/test as 40/30/30.
-
-3)Building decision tree models with three different settings in which are fitted to the training data:
-1- Decision Tree with default settings (denoted as "tree_a")
-2- Decision Tree with smallest allowed node size equal to 5000(denoted as "tree_b")
-3- Decision tree with a minimum deviance to 0.0005(denoted as "tree_c") 
-
-4)Calculating the "Misclassification rate and Accuracy" of each decision tree for the training and
-validation sets.
-
-5)Selecting the tree model that needs to be optimized. We select the decision tree with a minimum deviance to 0.0005 ("tree_c") due to overfitting.
-
-6)Using training and validation sets to choose the optimal tree depth in the model "tree_c": study the trees up to 50 leaves.
-
-. 
-Use  Present a graph of the dependence
-of deviances for the training and the validation data on the number of leaves
-and interpret this graph in terms of bias-variance tradeoff. Report the
-optimal amount of leaves and which variables seem to be most important for
-decision making in this tree. Interpret the information provided by the tree
-structure (not everything but most important findings).
-
-After that, we selected the tree model to be optimized as tree_c, and the best leaf tree is selected by comparing the Bias-variance trade off plot of the training data and the test data as 41.
-
-Finally, the tree_c is pruned using the equation prune.tree(...) , thus giving us an optimal tree model (denoted by tree_optimal). 
-
-With this optimal tree model, the training set is classified
+For decision trees, the following R packages “tree” and “rpart” are used. 
+First, a decision tree is constructed with the default parameter settings, denoted as “tree_a” in R script. The default tree model is then optimized by the accuracy rate returned by the validation data-set.
+Then we build two other decision tree models with different settings, setting a tree with a minimum number of nodes of 5000 (denoted
+as tree_b) and a tree with a default deviance of 0.0005 (denoted by tree_b), respectively, and select the tree model to be optimal in the next step by the correct rate returned.
+After that, we select the tree model to be optimized as tree_c, and the best leaf tree was selected by comparing the Bias-variance trade off plot of the training data and the test data as 41.??
+Finally, the tree_c is pruned by using the function prune.tree(. . . ) , thus giving us an optimal tree model
+(denoted by tree_optimal).
 
 
 **b. Support Vector Machine**
 
 Support Vector Machine (SVM) is one of the most popular supervised Learning algorithms that used for classification problems in machine learning. The objective of SVM algorithm is to generate the best decision boundary ,in other terms hyperplane, that can allocate N-dimensional space(N — the number of features) into classes in order to put the new data point in the right category. Through SVM, The hyperplane is generated in an iterative manner so that the error can be minimized. Briefly, SVM aims to divide the data sets into classes to find a maximum marginal hyperplane (MMH).
 
-The data-set is first divided into a training data-set, a validation data-set and a test data-set (40/30/30). Again, the training data set is used as the default model, "rbfdot" is used as the kernel function, and the parameter sigma is set to 0.01. The model is constructed with different parameters. The best parameters are determined by the classification errors returned from the validation data-set.
+The data-set is first divided into a training data-set, a validation data-set and a test data-set (40/30/30). Again, the training data set is used as the default model, the "rbfdot" is used as the kernel function, and the parameter sigma is set to 0.01. The model is constructed with different parameters. The best parameters are determined by the classification errors returned from the validation data-set.
 
 The model is validated for parameters C in the range 0.1 to 5.0, and it is found that the validation set returned the lowest classification error for parameter C of 0.3. Based on the above parameters, the final model is constructed.
 
@@ -167,7 +143,7 @@ data.frame(tree_a=c(train_error1,valid_error1),
 
 ### 3.1.3 Optimal tree model
 
-Create a Bias-variance tradeoff plot, choosing the right number of leaves according to the principle of Early stopping, the best number of leaves returned is 42.
+Create a Bias-variance tradeoff plot, choosing the right number of leaves according to the principle of early stopping, the best number of leaves returned is 42.
 
 ```{r optimaltree,echo=FALSE}
 # Optimal tree------------------------------------------------------------------
@@ -293,7 +269,7 @@ svm_model <- ksvm(X..50K~., data = rbind(train,valid), kernel="rbfdot",kpar=list
 
 ### 3.2.4 SVM prediction
 
-We used the same test data-set for prediction as in the tree model to ensure consistency when comparing the two methods. The optimal SVM method returned an accuracy of 89%.
+We use the same test data-set for prediction as in the tree model to ensure consistency when comparing the two methods. The optimal SVM method returns with an accuracy of 89%.
 
 ```{r svmpre,echo=FALSE}
 # Reset test data
@@ -319,8 +295,8 @@ error <- (t[1,2]+t[2,1])/sum(t)
 
 **4 Discussion and conclusion**
 ---
-
-In this assignment, the tree model returned a classification accuracy of 82%; the SVM method returned a classification accuracy of 89%. Our group discussed that the SVM method had some shortcomings in the degree of optimisation. For example, we only tested a sigma value of 0.05, and the default kernel function chosen is "rbfdot"; choosing a different combination of kernels would have provided a more accurate model. However, in this experiment, the categories contained in the individual features in the selected data-set are too complex, which caused difficulties in dividing the data in the training set. Specifically, there may be a mismatch between the data and the model when the model is subsequently optimal. To address this situation, our group took the approach of making the feature categories of the training set as inclusive as possible. This ensures model matching for the subsequent validation data-set and the test data-set.
+-----++++HONG DISCUSSION NEEDS TO BE CHANGED++++-------
+In this assignment, the tree model returns a classification accuracy of 82%the SVM model returns a classification accuracy of 89%. As a group we can state that the SVM method has some shortcomings in the degree of optimisation. For example, we have only tested a sigma value of 0.05, and the default kernel function chosen is "rbfdot"; choosing a different combination of kernels could have provided a more accurate model. However, in this experiment, the categories contain in the individual features in the selected data-set are too complex, which caused difficulties in dividing the data in the training set. Specifically, there may be a mismatch between the data and the model when the model is subsequently optimal. To address this situation, our group took the approach of making the feature categories of the training set as inclusive as possible. This ensures model matching for the subsequent validation data-set and the test data-set.
 
 Given that the SVM model has the following problems.
 
