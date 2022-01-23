@@ -31,12 +31,12 @@ The total number of observations in the adult data set are 48842 that contain a 
 
 Afterwards, the adjusted data set is partitioned into training, validation and a test sets (40/30/30) to prevent our models from overfitting and to evaluate our models accurately. 
 
-**2 The description of 2 classification models and how they are used in R**
+**2 The description of 2 classification models/algorithms and how they are used in R**
 ---
 
-**a. Decision trees**
+**a. Decision Trees**
 
-Decision tree analysis in general, is a predictive modeling tool with applications covering many different areas. Mainly, decision trees are established with an algorithmic approach that define ways to separate a dataset based on different conditions.It is one of the most widely used and convenient model in machine learning for classification. The aim of decision trees is to generate a model that predicts the value of a target variable by learning simple decision rules deduced from the data features. Here in our study, we use decision tree model for a classification task to predict whether income exceeds $50K/yr based on census data.
+Decision tree analysis in general, is a predictive modeling tool with applications covering many different areas. Mainly, decision trees are established with an algorithmic approach that define ways to separate a dataset based on different conditions.It is one of the most widely used and convenient model in machine learning for classification. The aim of decision trees is to generate a model that predicts the value of a target variable by learning simple decision rules deduced from the data features. 
 
 For decision trees, the following R packages "tree" and "rpart" are used for classification. While "tree" package 
 
@@ -51,7 +51,9 @@ Finally, the tree_c is pruned using the equation prune.tree(...) , thus giving u
 With this optimal tree model, the training set is classified
 
 
-**b. Support vector machines**
+**b. Support Vector Machine**
+
+Support Vector Machine (SVM) is one of the most popular supervised Learning algorithms that used for classification problems in machine learning. The objective of SVM algorithm is to generate the best decision boundary ,in other terms hyperplane, that can allocate N-dimensional space(N — the number of features) into classes in order to put the new data point in the right category. Through SVM, The hyperplane is generated in an iterative manner so that the error can be minimized. Briefly, SVM aims to divide the data sets into classes to find a maximum marginal hyperplane (MMH).
 
 The data-set is first divided into a training data-set, a validation data-set and a test data-set (40/30/30). Again, the training data set is used as the default model, "rbfdot" is used as the kernel function, and the parameter sigma is set to 0.01. The model is constructed with different parameters. The best parameters are determined by the classification errors returned from the validation data-set.
 
