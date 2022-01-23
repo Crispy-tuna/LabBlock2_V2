@@ -38,11 +38,31 @@ Afterwards, the adjusted data set is partitioned into training, validation and a
 
 Decision tree analysis in general, is a predictive modeling tool with applications covering many different areas. Mainly, decision trees are established with an algorithmic approach that define ways to separate a dataset based on different conditions.It is one of the most widely used and convenient model in machine learning for classification. The aim of decision trees is to generate a model that predicts the value of a target variable by learning simple decision rules deduced from the data features. 
 
-For decision trees, the following R packages "tree" and "rpart" are used for classification. While "tree" package 
+In our assignment, we have followed the following key stages:
 
-In our assignment, firstly a decision tree is constructed with the default parameter settings, denoted by "tree_a" in R script. The default tree model is then optimized by the accuracy rate returned by the validation data-set. 
+1)Installing "tree" and "rpart" packages.
 
-We then tried to build different tree models, setting a tree with a minimum number of nodes of 5000 (denoted by tree_b) and a tree with a default deviance of 0.0005 (denoted by tree_b), respectively, and selected the tree model to be optimal in the next step by the correct rate returned.
+2)Reading and adjusting selected adult data set and partition into training/validation/test as 40/30/30.
+
+3)Building decision tree models with three different settings in which are fitted to the training data:
+1- Decision Tree with default settings (denoted as "tree_a")
+2- Decision Tree with smallest allowed node size equal to 5000(denoted as "tree_b")
+3- Decision tree with a minimum deviance to 0.0005(denoted as "tree_c") 
+
+4)Calculating the "Misclassification rate and Accuracy" of each decision tree for the training and
+validation sets.
+
+5)Selecting the tree model that needs to be optimized. We select the decision tree with a minimum deviance to 0.0005 ("tree_c") due to overfitting.
+
+6)Using training and validation sets to choose the optimal tree depth in the model "tree_c": study the trees up to 50 leaves.
+
+. 
+Use  Present a graph of the dependence
+of deviances for the training and the validation data on the number of leaves
+and interpret this graph in terms of bias-variance tradeoff. Report the
+optimal amount of leaves and which variables seem to be most important for
+decision making in this tree. Interpret the information provided by the tree
+structure (not everything but most important findings).
 
 After that, we selected the tree model to be optimized as tree_c, and the best leaf tree is selected by comparing the Bias-variance trade off plot of the training data and the test data as 41.
 
