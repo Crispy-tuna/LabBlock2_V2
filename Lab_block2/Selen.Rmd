@@ -1,0 +1,188 @@
+---
+title: "Block_selen"
+author: "Selen Karaduman"
+date: "24 11 2021"
+output: pdf_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tree)
+library(e1071)
+library(rpart)
+```
+
+# Lab Block 2 Assignment - Decision trees and "ADD HONG TOPIC" Model to predict whether income exceeds $50K/year.
+
+ADD INTRODUCTION//
+
+## 2.1 - Import the data and partitioning
+
+Initial step is to import the data into R, removing the NAs from the dataset (which is "?" in our case) and divide it into training (50 percent)and test (50 percent) sets. The code is:
+
+```{r}
+
+# İnset data set 
+data = read.csv("adult.data")
+data$X..50K = as.factor(data$X..50K)
+
+#Removal of "?"s from the dataset
+for(i in 1:nrow(data)){
+  for(j in 1:ncol(data)){
+    if(isTRUE(as.character(data[i,j]) == " ?")){
+      data=data[-i,]
+    }
+  }
+}
+
+#Partitioning into train and test sets(50/50)
+
+set.seed(12345)
+n=dim(data)[1]
+id=sample(1:n, floor(n*0.5))
+train = data[id, ]
+test = data[-id,]
+
+
+
+
+
+```
+
+## 2.2  Decision trees
+
+In this section, the processed data is used in fitting decision trees. By using different settings, 3 different decision trees are fitted. The misclassification rate and the Accuracy of each decision tree is calculated for the training and test sets.
+
+### 2.2 a) Decision Tree with default settings
+
+The first decision tree is fitted with the default settings:
+```{r}
+dt_default <- rpart(X..50K~., data = train)
+trainfit = predict(dt_default, train, type = "class")
+CM <- table("True Label"=train$X..50K, "Predicted Label"=trainfit)
+print(CM)
+#Accuracy
+Accuracy <- sum(diag(CM)/sum(CM))
+Accuracy
+#Misclassification rate
+MSC<- 1- Accuracy
+MSC
+
+#test set
+dtdefault <- rpart(X..50K~., data = train)
+testfit = predict(dtdefault, test, type = "class")
+CMtest <- table("True Label"=test$X..50K, "Predicted Label"=testfit)
+print(CMtest)
+#Accuracy
+Accuracy <- sum(diag(CMtest)/sum(CMtest))
+Accuracy
+#Misclassification rate
+MSC<- 1- Accuracy
+MSC
+
+```
+
+In "Default Settings", the Misclassification Rate for the training data is: ADD EXPLANATION
+
+
+
+
+
+## Decision Tree with minimum deviance to 0.0005.
+
+```{r}
+dt_deviance <- tree(formula = X..50K~., 
+                      data = train,
+                      control = tree.control(nobs = 16280,
+                                             mindev = 0.0005))
+devfit= predict(dt_deviance, train, type = "class")
+CMdev= table("True Label"=test$X..50K, "Predicted Label"=devfit)
+CMdev
+
+#Accuracy
+Accuracy <- sum(diag(CMdev)/sum(CMdev))
+Accuracy
+#Misclassification rate
+MSC<- 1- Accuracy
+MSC
+
+
+```
+Both decision trees are plotted with the following code to see the similarities and differences:
+
+For 2nd decision tree, the smallest amount of observations allowed in a leaf to 7000 is set:
+```{r}
+dt_nodesize <- tree(formula = X..50K~., 
+                      data = train,
+                      control = tree.control(nobs = 16280,
+                                             minsize = 700))
+nodefit <- predict(dt_nodesize, train, type = "class")
+CMnode= table("True Label"=train$X..50K, "Predicted Label"=nodefit)
+CMnode
+
+#Accuracy
+Accuracy <- sum(diag(CMnode)/sum(CMnode))
+Accuracy
+#Misclassification rate
+MSC<- 1- Accuracy
+MSC
+
+```
+
+```{r fig.height=8}
+par(mfrow=c(1,2))
+plot(dt_default)
+title("DT-1: Default Settings")
+text(dt_default)
+plot(dt_nodesize)
+title("DT-2:Minimum deviance to 0.0005")
+text(dt_nodesize)
+```
+#Optimal tree
+
+```{r, fig.height=14, fig.width=15}
+
+dt_optimal <- prune.tree(dt_deviance, best = 22)
+optimalfit <- predict(dt_optimal, train, type = "class")
+CMoptimal= table("True Label"=train$X..50K, "Predicted Label"=nodefit)
+CMoptimal
+
+
+#Accuracy
+Accuracy <- sum(diag(CMoptimal)/sum(CMoptimal))
+Accuracy
+#Misclassification rate
+MSC<- 1- Accuracy
+MSC
+
+plot(dt, type = "uniform")
+title("Decsision Tree with the Optimal Amount of Leaves")
+text(dt_final, pretty = 0)
+```
+
+```{r}
+prune_train <- prune.tree(dt_deviance)
+prune_test <- prune.tree(dt_deviance, newdata = test)
+
+plot(rev(prune_train$size)[1:50], 
+     rev(prune_train$dev)[1:50], 
+     type = "b", 
+     col="purple", 
+     ylim = c(1000,20000),
+     main = "Dependence of Deviance on Number of Leaves",
+     xlab = "Leaves",
+     ylab = "Deviance")
+points(rev(prune_test$size)[1:50], 
+       rev(prune_test$dev)[1:50], 
+       type = "b", 
+       col="red")
+legend("topright",
+       legend = c("Training data", "Test data"),
+       col = c("purple","red"),
+       pch = c(19,19))
+```
+
+
+
+
+
+
