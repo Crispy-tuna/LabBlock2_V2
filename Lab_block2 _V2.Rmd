@@ -1,0 +1,429 @@
+---
+title: "ML_block2_lab"
+author: "Selen Karaduman, Hong Zhang"
+date: "12/16/2021"
+output: pdf_document
+toc: true
+theme: united
+bibliography: block2.bib
+#https://github.com/citation-style-language/styles/blob/master/ieee.csl
+---
+
+```{r setup, include=FALSE} 
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+```
+
+
+\newpage
+
+# Lab Block 2 Assignment - Decision tree and Support Vector Machine Models to predict whether income exceeds $50K/year.
+
+## 1 Introduction
+---
+
+"Classification" in machine learning, is a supervised learning approach that aims to solve a predictive modeling problem in which assigns a label value to a specific class and afterward can assign a particular type to be of one kind or another for making new observations. The main goal in classification is to identify which class or category the new data will be divided. There are several different types of machine learning algorithms/models for classification: (1)Logistic Regression, (2)Naive Bayes, (3)Stochastic Gradient Descent, (4)K-Nearest Neighbors, (5)Decision Tree, (6)Random Forest, (7)Artificial Neural Network and (8)Support Vector Machine. [@kotsiantis2006machine] [@kotsiantis2007supervised][@gupta2020comparative]
+
+In our assignment, we implement a classification approach on a chosen data set "Adult Data Set" - collected from UCI Machine Learning Repository- to predict whether income exceeds $50K/yr based on census data. This data set is originally collected and extracted by Barry Becker from a 1994 census database. The URL in citation one[@A7] contains a description of these features. To solve the classification problem, we have selected two different types of machine learning algorithms/models that are going to be implemented to our data set: 1. Decision Trees and 2. Support Vector Machine. After the implementation, the accuracy and the misclassification errors of both algorithms are compared to see which model is better for prediction.
+
+### 1.1 The Description of the data set
+
+The total number of observations in the Adult Data set is 32560 contains a total of 14 attributes such as age, gender, work status, and education. In this data set, we find that there are some missing values are shown as "?". The number of objects containing missing values is 2366, which can affect the performance of the models. Therefore, after importing the data set, the missing values are replaced by the statistical estimate of the feature obtained from other observations, which is the mode. Afterward, the adjusted data set is partitioned into training, validation, and test sets (40/30/30). 
+
+### 1.2 The description of 2 classification models/algorithms and how they are used in R**
+---
+
+#### 1.2.1 Decision Trees
+
+Decision tree analysis in genera is a predictive modeling tool with applications covering many different areas. Mainly, decision trees are established with an algorithmic approach that defines ways to separate a dataset based on different conditions. It is one of the most widely used and convenient models in machine learning for classification. Decision trees aim to generate a model that predicts the value of a target variable by learning simple decision rules deduced from the data features.[@navada2011overview][@dietterich1995machine] [@somvanshi2016review]
+
+For decision trees, the following R packages “tree” and “rpart” are used. 
+First, a decision tree is constructed with the default parameter settings, denoted as “tree_a” in the R script. 
+Then we build two other decision tree models with different settings, setting a tree with a minimum number of nodes of 5000 (denoted as tree_b) and a tree with default deviance of 0.0005 (denoted as tree_b). Based on the above different settings, construct different decision trees, and further select the tree that needs to be optimized according to the prediction accuracy of the test data set.
+
+After that, we select the tree model to be optimized (denoted as tree_c), and the best leaf tree will be selected by comparing the Bias-variance trade-off plot of the training data and the test data as 25.
+Finally, the tree_c is pruned by using the function prune.tree(..), thus giving us an optimal tree (denoted as tree_optimal).
+
+
+#### 1.2.2 Support Vector Machine
+
+Support Vector Machine (SVM) is one of the most popular supervised learning algorithms used for classification problems in machine learning. The objective of the SVM algorithm is to generate the best decision boundary, in other terms hyperplane, that can allocate N-dimensional space(N — the number of features) into classes to put the new data point in the right category. Through SVM, The hyperplane is generated iteratively so that the error can be minimized. Briefly, SVM aims to divide the data sets into classes to find a maximum marginal hyperplane (MMH).[@somvanshi2016review] [@wu2006analysis]
+
+**a. SVM with regression problem**
+
+$$(x_{1}, y_{1}),...,(x_{n}, y{n}),\  y_{i} = -1 \ or \ 1$$
+
+**b. SVM with classification problem**
+
+**Linear classification:**
+
+**Nonlinear classification:**
+
+To create nonlinear classifiers by applying the kernel function. Generally, there are four kinds of kernel functions: linear kernel function, polynomial kernel function, gaussian radial basis function, and sigmoid function.
+
+In our assignment, after dividing and adjusting the data set, we select 4 different kernel functions: linear, polynomial, sigmoid, and radial. Linear kernel function takes 3 parameters.
+
+**3 Model construction and experimental process**
+---
+
+## 3.1 Classification Tree
+
+### 3.1.1 Handling of missing values and Data partitioning
+
+**Handling of missing values**
+
+The Adult data set contains 32560 observations with a total of 2366 objects(rows) have missing values, these missing values are contained in the following variables(columns): "State.gov", "Adm.clerical" and "United.States".
+
+It is the easiest way to delete the rows(objects) that have missing values, but it can be replaced by a statistical estimate of the feature obtained from other observations, which can be the median or the mode of the feature. The statistical estimate we take is the mode of the feature, and the general steps are: Separately count the mode of the feature containing the missing values, and then replace the missing values by the mode of the feature.
+
+```{r tree model, echo=FALSE}
+# Tree--------------------------------------------------------------------------
+library(tree)
+library(ggplot2)
+library(rpart)
+# Read data---------------------------------------------------------------------
+data_read = read.csv("adult.data")
+data = data_read
+data$X..50K = as.factor(data$X..50K)
+# Clean data, Replace the missing values by feature's mode--------------------
+getMode <- function(vector) {
+  uniq = unique(vector)
+  uniq[which.max(tabulate(match(vector, uniq)))]
+}
+getMode(data$State.gov) # " Private"
+getMode(data$Adm.clerical) # " Prof-specialty"
+getMode(data$United.States) # " United-States"
+# Replace missing values by mode------------------------------------------------
+for (i in 1:nrow(data)) {
+  if (data[i, 2] == " ?") {
+    data[i, 2] = " Private"
+  }
+}
+for (i in 1:nrow(data)) {
+  if (data[i, 7] == " ?") {
+    data[i, 7] = " Prof-specialty"
+  }
+}
+for (i in 1:nrow(data)) {
+  if (data[i, 14] == " ?") {
+    data[i, 14] = " United-States"
+  }
+}
+
+```
+
+**Data partitioning**
+
+Divide data randomly into train, valid and test (4:3:3).
+
+```{r divide data, echo=FALSE}
+# Divide data (40/30/30)--------------------------------------------------------
+n = dim(data)[1]
+set.seed(12345)
+id = sample(1:n, floor(n * 0.4))
+train = data[id, ]
+id1 = setdiff(1:n, id)
+set.seed(12345)
+id2 = sample(id1, floor(n * 0.3))
+valid = data[id2, ]
+id3 = setdiff(id1, id2)
+test = data[id3, ]
+
+```
+
+### 3.1.2 Decision trees with different settings
+
+Use the tree function in the tree R package to set different parameters for the decision tree and study the prediction performance of the decision tree under different constraints on the validation set.
+
+Three different tree models are constructed:
+a. Default tree (denoted as tree_a in the R code);
+b. Tree with a minimum node size of 5000 (denoted as tree_b in the R code);
+c. Tree with a minimum deviation of 0.0005 (denoted as tree_c in the R code).
+
+Compare the prediction accuracy of the above three trees on the validation data set, and select the tree with the lowest misclassification rate as the target for further optimization.
+
+**Summary of misclassification rates**
+
+```{r threetree, echo=FALSE}
+# Default tree------------------------------------------------------------------
+tree_a = tree(as.factor(X..50K)~., train)
+#--train data
+Yfit = predict(tree_a, train, type="class")
+train_error1 = 1 - sum(diag(table(train$X..50K, Yfit))) / sum(table(train$X..50K,Yfit))
+#--valid data
+Yfit = predict(tree_a, valid, type="class")
+valid_error1 = 1 - sum(diag(table(valid$X..50K,Yfit))) / sum(table(valid$X..50K,Yfit))
+valid_error1 # 0.2009623
+
+# Smallest node size 5000-------------------------------------------------------
+tree_b = tree(as.factor(X..50K)~., train, minsize = 5000)
+#--train data
+Yfit = predict(tree_b, train, type="class")
+train_error2 = 1 - sum(diag(table(train$X..50K,Yfit))) / sum(table(train$X..50K,Yfit))
+#--valid data
+Yfit = predict(tree_b, valid, type="class")
+valid_error2 = 1 - sum(diag(table(valid$X..50K,Yfit))) / sum(table(valid$X..50K,Yfit))
+valid_error2 # 0.2009623
+# Minimum deviance 0.0005-------------------------------------------------------
+tree_c = tree(as.factor(X..50K)~., train, mindev = 0.0005)
+#--train data
+Yfit = predict(tree_c, train, type="class")
+train_error3 = 1 - sum(diag(table(train$X..50K,Yfit))) / sum(table(train$X..50K,Yfit))
+#--valid data
+Yfit = predict(tree_c, valid, type="class")
+valid_error3 = 1 - sum(diag(table(valid$X..50K,Yfit))) / sum(table(valid$X..50K,Yfit))
+valid_error3 # 0.1784398
+
+# Misclassification rates
+data.frame(tree_a=c(train_error1,valid_error1),
+           tree_b=c(train_error2,valid_error2),
+           tree_c=c(train_error3,valid_error3),
+           row.names = c("Train_error_rates: ","Valid_error_rates: "))
+
+```
+
+
+### 3.1.3 Optimization of decision tree
+
+In the above steps, we generate a complete decision tree (tree_c), and now we need to optimize it. The optimization strategy is pruning.
+
+The purpose of pruning is to avoid overfitting in the decision tree model. Because the decision tree algorithm continuously divides the nodes to classify the training samples as accurately as possible during the learning process, this will lead to too many branches of the entire tree, which may lead to overfitting. There are two basic pruning strategies for decision trees: pre-pruning and post-pruning. We adopt post-pruning method in this assignment.
+
+Usually a model with high Variance means that it is often very complex, and complex models are often very sensitive to some sample points, which is likely to Overfit.
+
+**Bias-Variance Decomposition:**
+
+Y is response
+$$Y = f(x) + e$$
+
+Suppose $\hat{f} (x)$ is the model to be trained through the training data set, then the error at the point $x$ can be expressed as:
+
+$$Err(x) = E[(Y-\hat{f} (x))^2]$$
+which is: 
+
+$$Err(x) = [E(\hat{f}(x) - f(x))^2] + E[(\hat{f}(x) - E(\hat{f}(x)))^2] + \sigma_{e}^2$$
+$[E(\hat{f}(x) - f(x))]$ is the Bias, and $E[(\hat{f}(x) - E(\hat{f}(x)))^2]$ is Variance, $\sigma_{e}^2$ is irreducible error.
+
+
+The relationship between model complexity and model Error can be represented by the plot of the Bias-variance tradeoff.
+
+**The Bias-variance tradeoff:**
+We need to find the balance between bias and variance. In the figure below, the balance is achieved when the abscissa value (number of leaves) is 25, which is also the best depth to optimize the tree.
+
+```{r optimaltree,echo=FALSE}
+# Optimal tree------------------------------------------------------------------
+# Choose the optimal tree depth
+trainScore = rep(0,50)
+validScore = rep(0,50)
+
+for(i in 2:50){ 
+  prunedTree = prune.tree(tree_c, best=i)
+  pred = predict(prunedTree, newdata=valid, type="tree")
+  trainScore[i] = deviance(prunedTree)
+  validScore[i] = deviance(pred)
+}
+
+df = data.frame(trainScore[2:50],validScore[2:50])
+ggplot(df)+
+  geom_point(aes(x=2:50, y=validScore[2:50],color = "Validation data"))+
+  geom_point(aes(x=2:50, y=trainScore[2:50],color = "Training data"))+
+  geom_line(aes(x=2:50, y=validScore[2:50],color = "Validation data"))+
+  geom_line(aes(x=2:50, y=trainScore[2:50],color = "Training data"))+
+  xlab("Number of leaves  [2:50]") + ylab("Deviance")+
+  ggtitle("Dependence of deviances on the number of leaves")+
+  scale_colour_manual("",
+                      breaks = c("Training data","Validation data"),
+                      values = c("steelblue","red"))+
+  theme(plot.title = element_text(hjust = 0.5))+
+  theme_set(theme_bw())
+
+# Optimal amount of leaves: 25
+which.min(validScore[2:50]) + 1
+
+# Variable importance
+optimal_tree = prune.tree(tree_c, best = 25)
+
+```
+
+### 3.1.4 Prediction of test data set
+
+We need to prune tree_c, and the size of the specific subtree is 25. Then, using the optimized tree (denoted as tree_optimal in R code) to make predictions on the test set, the prediction accuracy is 0.8342547.
+
+**The relevant information of the optimized tree and the confusion matrix: **
+```{r treepre,echo=FALSE}
+# prediction--------------------------------------------------------------------
+# Optimal tree
+tree_optimal = prune.tree(tree_c, best = 25)
+summary(tree_optimal)
+Yfit = predict(tree_optimal, test, type="class")
+#--Confusion matrix
+confusion_optimal = table(test$X..50K, Yfit)
+confusion_optimal
+#--Accuracy rate
+accuracy_optimal = sum(diag(confusion_optimal)) / sum(confusion_optimal)
+accuracy_optimal # 0.8342547
+
+
+```
+
+
+## 3.2 SVM method
+
+In the Adult data set, the response is nonlinear, which represents an annual income: >50K or <= 50K.
+We treat the prediction of annual income as a nonlinear classification problem.
+
+Through the kernel function, we can use the maximum-margin hyperplane algorithm to build a nonlinear classifier. Therefore, the choice of kernel function and parameters will affect the final classification effect of the model. 
+
+Our group uses four common kernel functions: linear kernel function, polynomial kernel function, gaussian radial basis function, and sigmoid function.
+
+and finds suitable hyperparameters through Grid Search strategy
+
+### 3.2.1 Divide data randomly into train, valid and test (40/30/30).
+
+
+In the Adult dataset, features that contain missing values are: "State.gov", "Adm.clerical" and "United.States". we replace the missing values of the feature with the mode obtained from other observations.
+
+```{r svmdata,echo=FALSE}
+# SVM----------------------------------------------------------------------------
+library(ggplot2)
+library(e1071)
+# Read data---------------------------------------------------------------------------
+data_read = read.csv("adult.data")
+data = data_read
+data$X..50K = as.factor(data$X..50K)
+# Clean data, Replace the missing features by features' mode---------
+getMode <- function(vector) {
+  uniq = unique(vector)
+  uniq[which.max(tabulate(match(vector, uniq)))]
+}
+getMode(data$State.gov) # " Private"
+getMode(data$Adm.clerical) # " Prof-specialty"
+getMode(data$United.States) # " United-States"
+
+for (i in 1:nrow(data)) {
+  if (data[i, 2] == " ?") {
+    data[i, 2] = " Private"
+  }
+}
+for (i in 1:nrow(data)) {
+  if (data[i, 7] == " ?") {
+    data[i, 7] = " Prof-specialty"
+  }
+}
+for (i in 1:nrow(data)) {
+  if (data[i, 14] == " ?") {
+    data[i, 14] = " United-States"
+  }
+}
+```
+
+Divide data randomly into train, valid and test (40/30/30).
+
+``````{r svmdata_divided, echo=FALSE}
+# divide dataset
+n = dim(data)[1]
+set.seed(12345)
+id = sample(1:n, floor(n * 0.4))
+train = data[id, ]
+id1 = setdiff(1:n, id)
+set.seed(12345)
+id2 = sample(id1, floor(n * 0.3))
+valid = data[id2, ]
+id3 = setdiff(id1, id2)
+test = data[id3, ]
+
+```
+
+### 3.2.2 Optimal parameters
+
+The model is constructed using the train data as the data-set, and the error returned by the prediction of the validation data-set is used to select the appropriate parameters.
+
+The kernel function is selected as "rbfdot", the parameter sigma is set to 0.05, and the parameter c is set to a range of 0.1 to 5.0 for parameter optimization.
+
+```{r svmoptimalp,echo=FALSE,eval=FALSE}
+# SVM---------------------------------------------------------------------------
+# choose C 
+by = 0.1
+err_va = NULL
+for(i in seq(by,5,by)){ # set C parameters from 0.1 to 5.0
+  filter = ksvm(X..50K~.,data=train,kernel="rbfdot",kpar=list(sigma=0.05),C=i,scaled=FALSE)
+  mailtype = predict(filter,valid[,-15])
+  t = table(mailtype,valid[,15])
+  err_va = c(err_va,(t[1,2]+t[2,1])/sum(t))
+}
+
+
+# Svm model
+c = which.min(err_va)*by # 0.8
+
+```
+
+
+### 3.2.3 Optimal SVM
+
+The optimal parameter c is 0.8, when the validation set returns the smallest error and the optimized SVM is constructed (denoted by svm_model). In constructing the optimal SVM, we have used a generalization error criterion that allows the model to have better stability.
+
+```{r svmmodel}
+svm_model <- ksvm(X..50K~., data = rbind(train,valid), kernel="rbfdot",kpar=list(sigma=0.05),
+                  C = 0.8, scaled=FALSE)
+
+```
+
+### 3.2.4 SVM prediction
+
+We use the same test data-set for prediction as in the tree model to ensure consistency when comparing the two methods. The optimal SVM method returns with an accuracy of 89%.
+
+```{r svmpre,echo=FALSE}
+# Reset test data
+n = dim(data)[1]
+set.seed(12345)
+id = sample(1:n, floor(n * 0.4))
+train = data[id, ]
+id1 = setdiff(1:n, id)
+set.seed(12345)
+id2 = sample(id1, floor(n * 0.3))
+valid = data[id2, ]
+id3 = setdiff(id1, id2)
+test = data[id3, ]
+
+pre <- predict(svm_model, test[,-15]) # test error
+t <- table(pre, test[,15])
+error <- (t[1,2]+t[2,1])/sum(t)
+1 - error
+
+
+```
+
+
+**4 Discussion and conclusion**
+---
+
+-----++++HONG DISCUSSION NEEDS TO BE CHANGED++++-------
+
+discuss the advantage of sigmoid and radial kernel functions why.
+response is non-numeric
+
+what's happend of these different kernel funcitons, which algorithm should be selected for this classifiction problem. why? comparison with SVM model and decision tree. 
+
+mention the cost function and objective function.
+
+
+In this assignment, the tree model returns a classification accuracy of 82%, while the SVM model returns a classification accuracy of 89%. As a group we can state that the SVM method has some shortcomings in the degree of optimization. For example, we have only tested a sigma value of 0.05, and the default kernel function chosen is "rbfdot"; choosing a different combination of kernels could have provided a more accurate model. However, in this experiment, the categories contain in the individual features in the selected data-set are too complex, which caused difficulties in dividing the data in the training set. Specifically, there may be a mismatch between the data and the model when the model is subsequently optimal. To address this situation, our group took the approach of making the feature categories of the training set as inclusive as possible. This ensures model matching for the subsequent validation data-set and the test data-set.
+
+Given that the SVM model has the following problems.
+
+(1) SVM performs very well with small samples, as its generalisation ability is superior to that of classification algorithms, but is less effective when faced with large, high-dimensional data.
+
+(2) It is sensitive to missing data.
+
+Among other things, sensitivity to missing data is verified in this experiment. However, in the subsequent classification process, it is difficult to get the training set samples to contain all the features, and there is a mismatch between the data and the model.
+
+In this regard, we propose the following idea: can the mismatch between the model and the data-set be solved by numericising all the features in the data-set? In the case where all features are numeric, it is easy to apply the SVM model without worrying about the mismatch. A possible problem caused by feature numeric is a further reduction in the explanatory power of the model.
+
+In summary, we believe that tree-based models require relatively less data pre-processing and should be preferred for fast implementation of classification problems. the parameter calls and optimisation of SVM would take up extra time and computational resources.
+
+# Reference
+
+# Code Appendix
+
+```{r ref.label= knitr::all_labels(), echo=TRUE, eval=FALSE}
+```
